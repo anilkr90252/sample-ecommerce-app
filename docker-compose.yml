@@ -1,0 +1,29 @@
+version: '3.7'
+networks:
+  dev-network:
+    driver: bridge
+services:
+  employer-service:
+    image: ecommerce-service
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - dev-network
+  postgres:
+    image: postgres:14.12
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_container:/var/lib/postgresql/data
+    networks:
+      - dev-network
+    environment:
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+
+volumes:
+  postgres_data_container:

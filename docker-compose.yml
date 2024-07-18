@@ -3,17 +3,23 @@ networks:
   dev-network:
     driver: bridge
 services:
-  employer-service:
+  ecommerce-service:
     image: ecommerce-service
     build:
-      context: ./
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     networks:
       - dev-network
+    depends_on:
+      - postgres
+    environment:
+      DB_USER: ecomm_user
+      DB_PASSWORD: uKiTgHCM&51
   postgres:
     image: postgres:14.12
+    restart: always
     ports:
       - "5432:5432"
     volumes:
@@ -22,8 +28,8 @@ services:
       - dev-network
     environment:
       POSTGRES_DB: ecommerce
-      POSTGRES_USER: your_username
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_USER: ecomm_user
+      POSTGRES_PASSWORD: uKiTgHCM&51
 
 volumes:
   postgres_data_container:

@@ -10,7 +10,7 @@ import sg.makeit.test.dtos.ProductDto;
 import sg.makeit.test.dtos.ProductPageResponseDto;
 import sg.makeit.test.models.Product;
 import sg.makeit.test.repositories.ProductRepository;
-
+import sg.makeit.test.exceptions.ProductNotFoundException;
 import java.util.List;
 
 @Service
@@ -30,11 +30,12 @@ public class ProductService {
     }
 
     private List<ProductDto> getProductDtos(List<Product> products) {
-       return products.stream().map(product -> this.modelMapper.map(product,ProductDto.class)).toList();
+        return products.stream().map(product -> this.modelMapper.map(product, ProductDto.class)).toList();
     }
 
     public Mono<Product> getProductBySlug(String slug) {
-        return productRepository.findFirstBySlug(slug);
+        return productRepository.findFirstBySlug(slug)
+                .switchIfEmpty(Mono.error(new ProductNotFoundException("Product with slug %snot found" .formatted(slug))));
     }
 
 }
